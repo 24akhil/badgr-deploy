@@ -1,0 +1,80 @@
+<form-message></form-message>
+
+<div class="topbar">
+	<div class="l-containerxaxis">
+		<div class="topbar-x-breadcrumbs">
+			<bg-breadcrumbs [linkentries]="editIssuerCrumbs">
+			</bg-breadcrumbs>
+		</div>
+		<div class="topbar-x-heading">
+			Edit Issuer
+		</div>
+		<div class="topbar-x-subheading">
+			Edit the information associated with this issuer profile.
+		</div>
+
+	</div>
+</div>
+
+
+<div class="l-containerxaxis l-containeryaxis">
+
+	<form (ngSubmit)="onSubmit()"
+	      class="u-width-formsmall u-margin-top3x"
+	      novalidate
+	>
+
+		<fieldset>
+			<bg-formfield-image #imageField
+			                    label="Image (Optional)"
+			                    imageLoaderName="issuer"
+			                    [placeholderImage]="issuerImagePlacholderUrl"
+			                    [control]="issuerForm.rawControlMap.issuer_image"
+			></bg-formfield-image>
+
+			<bg-formfield-text class="u-margin-bottom2x"
+			                   [control]="issuerForm.rawControlMap.issuer_name"
+			                   [label]="'Name'"
+			                   [errorMessage]="{required:'Please enter an issuer name'}"
+			                   [autofocus]="true"
+			></bg-formfield-text>
+
+			<bg-formfield-text class="u-margin-bottom2x"
+			                   [control]="issuerForm.rawControlMap.issuer_url"
+			                   [label]="'Website URL'"
+			                   [errorMessage]="'Please enter a valid URL'"
+			                   [urlField]="true"
+			></bg-formfield-text>
+
+			<bg-formfield-select class="u-margin-bottom2x"
+			                     [control]="issuerForm.rawControlMap.issuer_email"
+			                     [label]="'Contact Email'"
+			                     [placeholder]="'Please select a verified email'"
+			                     [options]="emailsOptions"
+			                     [errorMessage]="{required:'Please select a verified email'}"
+			></bg-formfield-select>
+
+			<bg-formfield-text class="u-margin-bottom2x"
+			                   [control]="issuerForm.rawControlMap.issuer_description"
+			                   [label]="'Description'"
+			                   [errorMessage]="{ required: 'Please enter a description'}"
+			                   [multiline]="true"
+			></bg-formfield-text>
+
+			<div class="l-stack l-stack-buttons">
+				<button type="submit"
+				        class="button"
+				        [disabled]="!! editIssuerFinished"
+				        [loading-promises]="[ editIssuerFinished ]"
+				        loading-message="Adding"
+				>Save
+				</button>
+				<a [routerLink]="['/issuer/issuers', issuerSlug]"
+				   class="button button-secondary"
+				   [disabled-when-requesting]="true"
+				>Cancel</a>
+			</div>
+
+		</fieldset>
+	</form>
+</div>

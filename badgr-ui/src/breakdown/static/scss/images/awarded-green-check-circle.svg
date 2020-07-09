@@ -1,0 +1,13 @@
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<g id="Pathways:-Recipient" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+		<g id="HD---Pathway---Root---No-Progress---Sidebar" transform="translate(-1400.000000, -925.000000)">
+			<g id="Icon-/-Check-/-Panel-/-Child-Accomplished" transform="translate(1400.000000, 925.000000)">
+				<path d="M12,24 C18.627417,24 24,18.627417 24,12 C24,10.269192 23.6335689,8.62396855 22.9740522,7.13767522 C21.1082212,2.93281987 16.896609,0 12,0 C5.372583,0 0,5.372583 0,12 C0,18.627417 5.372583,24 12,24 Z" id="Oval-Copy" fill="#7FCC2A"></path>
+				<rect id="bounds" x="4" y="4" width="16" height="16"></rect>
+				<g id="icon-copy" transform="translate(6.000000, 8.000000)" stroke="#FFFFFF" fill="#FFFFFF">
+					<polygon id="icon-check-white-small" points="10.6665619 0 4.88874921 5.7778127 2 3 0.666561911 4.33343809 4.88874921 8.44437461 12 1.33343809"></polygon>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

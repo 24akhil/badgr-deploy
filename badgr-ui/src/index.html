@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Loading</title>
+	<base href="/">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+
+	<style type="text/css">
+		@keyframes loading-fade {
+			0% {
+				opacity: .4;
+			}
+			50% {
+				opacity: 1;
+			}
+			100% {
+				opacity: .4;
+			}
+		}
+	</style>
+</head>
+<body>
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DLJTBB"
+									height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<app-root class="l-stickyfooter u-background-light2"></app-root>
+
+<!-- Inline style so loading shows up before css and theming is ready -->
+<div id="initial-loading-indicator"
+     style="align-items: center;
+     display: flex;
+     height: 100%;
+     justify-content: center;
+     left: 0;
+     position: fixed;
+     top: 0;
+     width: 100%;
+     background: white;
+     z-index: 1000;
+">
+	<img class="initial-loading-image"
+			 style="animation: loading-fade 1.25s ease-out infinite;"
+	/>
+</div>
+
+<!-- TODO: load conditionally -->
+<script type="text/javascript" src="assets/zipjs/zip.js"></script>
+
+<!-- Include the unsupported browser check -->
+<script type="text/javascript"
+        src="assets/unsupported-browser-check.js"
+        async
+></script>
+</body>
+</html>

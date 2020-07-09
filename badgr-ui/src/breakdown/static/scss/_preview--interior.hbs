@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+      {{render '@preview--head'}}
+    </head>
+
+    <body>
+
+      <app>
+
+        {{render '@header'}}
+
+        <main>
+          {{{ yield }}}
+        </main>
+
+        <footer class="{{render '@wrap'}} {{render '@l-containerhorizontal'}}">
+          {{render '@footer'}}
+        </footer>
+
+        {{render '@menu'}}
+
+      </app>
+
+      {{render '@preview--scripts'}}
+
+    </body>
+
+</html>

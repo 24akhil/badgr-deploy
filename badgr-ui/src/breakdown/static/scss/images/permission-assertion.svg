@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="24px" viewBox="0 0 22 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon / BadgeAward</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="SSO" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="D---Authorize" transform="translate(-327.000000, -433.000000)">
+            <g id="Permissions-Table" transform="translate(310.000000, 260.000000)">
+                <g id="row-3" transform="translate(0.000000, 157.000000)">
+                    <g id="Icon-/-BadgeAward" transform="translate(16.000000, 16.000000)">
+                        <g>
+                            <rect id="bounds" x="0" y="0" width="24" height="24"></rect>
+                            <path d="M21.3443709,5.33403974 L12.5454305,0.24794702 C11.9859603,-0.0826490066 11.2739073,-0.0826490066 10.7144371,0.24794702 L1.91549669,5.33403974 C1.35602649,5.66463576 1,6.27496689 1,6.91072848 L1,17.0829139 C1,17.744106 1.35602649,18.3544371 1.91549669,18.6596026 L10.7144371,23.7456954 C10.9941722,23.8982781 11.2993377,24 11.6299338,24 C11.9605298,24 12.2656954,23.9237086 12.5454305,23.7456954 L21.3443709,18.6596026 C21.9038411,18.3290066 22.2598675,17.7186755 22.2598675,17.0829139 L22.2598675,6.91072848 C22.2598675,6.27496689 21.9038411,5.66463576 21.3443709,5.33403974 Z M10.434702,15.607947 L6.92529801,12.098543 L8.22225166,10.8015894 L10.434702,13.0140397 L15.0376159,8.41112583 L16.3345695,9.70807947 L10.434702,15.607947 Z" id="Shape" fill="#BCBBC7" fill-rule="nonzero"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

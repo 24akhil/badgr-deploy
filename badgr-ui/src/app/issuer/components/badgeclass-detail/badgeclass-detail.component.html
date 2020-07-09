@@ -1,0 +1,269 @@
+<main class="o-container"
+	*bgAwaitPromises="[issuerLoaded, badgeClassLoaded]">
+	<form-message></form-message>
+	<external-tool-launch></external-tool-launch>
+
+	<ng-template [ngIf]="badgeClass && issuer">
+		<header class="topbar">
+		<div class="l-containerxaxis">
+			<div class="topbar-x-breadcrumbs">
+				<bg-breadcrumbs [linkentries]="crumbs">
+				</bg-breadcrumbs>
+			</div>
+		</div>
+		</header>
+		<div class="badgedetail">
+			<div class="badgedetail-x-header">
+				<h1>{{ badgeClass?.name }}</h1>
+				<div class="l-primarymore">
+					<a class="button"
+						[routerLink]="['/issuer/issuers', issuerSlug, 'badges', badgeClass.slug, 'issue']"
+						[disabled-when-requesting]="true"
+					>Award Badge</a>
+					<button class="buttonicon buttonicon-secondary" id="actionstrigger"
+			    		[bgPopupMenuTrigger]="moreMenu">
+				        <svg icon="icon_more"></svg>
+				        <span class="visuallyhidden">More</span>
+				    </button>
+					<bg-popup-menu #moreMenu>
+						<button class="menuitem" type="button"
+					    	[routerLink]="['/issuer/issuers', issuerSlug, 'badges', badgeClass.slug, 'edit']"
+				        ><svg icon="icon_edit"></svg>Edit</button>
+						<button class="menuitem"
+						(click)="deleteBadge()"
+						[disabled-when-requesting]="true"
+						><svg icon="icon_remove"></svg>Delete</button>
+				        <!--
+				        	TODO: Add 'share' action
+				        -->
+					</bg-popup-menu>
+				</div>
+			</div>
+			<div class="badgedetail-x-sidebar">
+				<div class="badgedetail-x-sidebarinternal">
+					<!-- Badge Assertion Image -->
+					<img class="badgeimage badgeimage-center badgeimage-large"
+					     [loaded-src]="badgeClass.image"
+					     [loading-src]="badgeLoadingImageUrl"
+					     [error-src]="badgeFailedImageUrl"
+					     width="200" />
+					<!-- Issuer Information -->
+					<dl>
+				    	<div class="l-flex l-flex-2x u-padding-top2x border border-top border-light3">
+							<div>
+								<img [loaded-src]="issuer.image"
+									 [loading-src]="issuerImagePlacholderUrl"
+									 [error-src]="issuerImagePlacholderUrl"
+									 width="40" />
+							</div>
+							<div>
+								<dt class="u-text-small-bold u-text-dark2">Issued by:</dt>
+								<dd class="u-text">
+	                				<a class="u-break-word" [routerLink]="['/issuer/issuers/', issuerSlug]">{{ issuer.name }}</a>
+	            				</dd>
+							</div>
+						</div>
+						<dt class="u-text-small-bold u-padding-top2x u-margin-top2x border border-top border-light3 u-text-dark2">Created on:</dt>
+						<dd class="u-text"><time [date]="badgeClass.createdAt" format="MM/dd/y"></time></dd>
+				    	<dt class="u-text-small-bold u-padding-top2x u-margin-top2x border border-top border-light3 u-text-dark2"
+				    		*ngIf="badgeClass.expiresAmount"
+				    		>Expires after:</dt>
+				    	<dd class="u-text"
+				    		*ngIf="badgeClass.expiresAmount > 1"
+			    		>{{ badgeClass.expiresAmount }} {{ badgeClass.expiresDuration }}</dd>
+				    	<dd class="u-text"
+				    		*ngIf="badgeClass.expiresAmount == 1"
+			    		>{{ badgeClass.expiresAmount }} {{ badgeClass.expiresDuration.slice(0, -1) }}</dd>
+					</dl>
+				</div>
+			</div>
+			<div class="badgedetail-x-desc">
+				<h2 class="u-text-h3-semibold u-text-dark2 u-margin-bottom2x u-hidden-mintablet">Description</h2>
+				<p class="u-text-body u-width-paragraph">{{ badgeClass.description }}</p>
+			</div>
+			<div class="badgedetail-x-body">
+
+				<!-- criteria -->
+				<section
+					*ngIf="badgeClass.criteria_url || badgeClass.criteria_text">
+					<h3 class="u-text-h3-semibold u-text-dark2 u-margin-bottom2x u-margin-top4x"
+					>Criteria</h3>
+					<show-more>
+						<markdown-display
+							*ngIf="badgeClass.criteria_text"
+							[value]="badgeClass.criteria_text">
+						</markdown-display>
+					</show-more>
+					<div class="u-margin-yaxis2x"
+							*ngIf="badgeClass.criteria_url">
+						<a class="u-text-outlink" target="_blank"
+							[href]="badgeClass.criteria_url"
+						>View External Criteria URL
+							<svg icon="icon_external_link"></svg>
+						</a>
+					</div>
+				</section>
+
+				<!-- alignment -->
+				<section>
+					<h3 class="u-text-h3-semibold u-text-dark2 u-margin-yaxis2x"
+						*ngIf="badgeClass.alignments && badgeClass?.alignments.length>0"
+						>Alignment</h3>
+
+					<div class="bordered l-padding-2x l-marginBottom-2x"
+						 *ngFor="let alignment of badgeClass.alignments; let i=index">
+						<div class="l-flex l-flex-justifybetween">
+							<h4 class="u-text-body-bold u-margin-bottom1x">{{ alignment.target_name }}</h4>
+							<small>{{ alignment.target_code }}</small>
+						</div>
+						<p class="u-break-word u-text-body u-width-paragraph">{{ alignment.target_description }}</p>
+						<div *ngIf="alignment.framework_name">
+							<h1>Framework</h1>
+							{{ alignment.framework_name }}
+						</div>
+						<div class="u-margin-yaxis2x"
+							 *ngIf="alignment.target_url">
+							<a class="u-text-outlink"
+								[href]="alignment.target_url"
+								target="_blank"
+							>View alignment URL
+								<svg icon="icon_external_link"></svg>
+							</a>
+						</div>
+					</div>
+				</section>
+
+				<!-- tags -->
+				<section>
+					<h3 class="u-text-h3-semibold u-text-dark2 u-margin-bottom2x u-margin-top4x"
+						*ngIf="badgeClass.tags && badgeClass.tags.length">Tags</h3>
+					<div class="l-tags">
+						<div class="tag"
+							*ngFor="let tag of badgeClass.tags; last as last"
+						>{{ tag }}</div>
+					</div>
+				</section>
+
+				<!-- recipients -->
+				<div class="l-stack u-margin-bottom2x u-margin-top4x">
+					<h2 class="u-text-h3-semibold u-text-dark2">{{ recipientCount }} Badge {{ recipientCount == 1 ? 'Recipient' : 'Recipients' }}</h2>
+					<div class="forminput forminput-hasicon">
+						<p class="forminput-x-sublabel"
+							>Search by full email address</p>
+						<div class="forminput-x-inputs">
+								<input type="text" placeholder="Search by Email"
+									[(ngModel)]="searchQuery">
+								<svg class="forminput-x-icon"
+									icon="icon_search"></svg>
+						</div>
+					</div>
+				</div>
+				<p class="u-text u-margin-bottom3x" *ngIf="showAssertionCount">{{ instanceResults.length }} awards shown. You may use the Next/Previous buttons below to view more awards or you may search for awards by exact email address/recipient identifier.</p>
+				<ng-template
+					[bgAwaitPromises]="[badgeInstancesLoaded, assertionsLoaded]"
+					*ngIf="instanceResults?.length">
+					<table class="datatable datatable-roundheaders datatable-onlyfirstcolumn">
+						<thead class="datatable-x-head">
+							<tr class="datatable-x-header">
+								<th class="datatable-x-cell" scope="col">ID</th>
+								<th class="datatable-x-cell" scope="col">Awarded</th>
+								<th class="datatable-x-cell" scope="col"><span class="visuallyhidden">Actions</span></th>
+							</tr>
+						</thead>
+						<tbody class="datatable-x-body">
+							<tr class="datatable-x-row"
+								*ngFor="let instance of instanceResults">
+								<th class="datatable-x-cell u-text-body" scope="row">
+									<div class="l-flex l-flex-2x l-flex-aligncenter">
+										<span *ngIf="instance.isExpired" class="badgestatus badgestatus-expired u-margin-right1x">expired</span>
+										<span class="l-flex-x-grow u-overflow-ellipsis">{{ instance.recipientIdentifier }}</span>
+										<span class="l-flex l-flex-justifyend l-flex-aligncenter l-flex-1x u-hidden-minmobilelarge">
+											<button class="buttonicon buttonicon-link"
+												(click)="popInstance = instance"
+												[bgPopupMenuTrigger]="mobileTableMoreMenu">
+												<svg icon="icon_more"></svg>
+												<span class="visuallyhidden">More</span>
+											</button>
+										</span>
+									</div>
+								</th>
+								<td class="datatable-x-cell u-text-smalllineheight3x"><time [date]="instance.issuedOn" format="mediumDate"></time></td>
+								<td class="datatable-x-cell">
+									<div class="l-flex l-flex-justifyend l-flex-aligncenter l-flex-1x">
+										<a class="u-text-link-small" target="_blank"
+											[href]="instance.url"
+										>View</a>
+										<button class="buttonicon buttonicon-link"
+											(click)="popInstance = instance"
+											[bgPopupMenuTrigger]="tableMoreMenu">
+											<svg icon="icon_more"></svg>
+											<span class="visuallyhidden">More</span>
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<bg-popup-menu #mobileTableMoreMenu>
+						<button type="button" class="menuitem"
+										(click)="shareInstance(popInstance)"
+						><svg icon="icon_share"></svg>Share</button>
+						<button type="button" class="menuitem"
+										(click)="revokeInstance(popInstance)"
+						><svg icon="icon_remove"></svg>Revoke</button>
+						<ng-container *ngIf="launchpoints">
+							<button class="menuitem" type="button"
+									*ngFor="let lp of launchpoints"
+									(click)="clickLaunchpoint(lp, popInstance.slug)">
+							<svg icon="icon_external_link"></svg>
+							{{ lp.label }}
+						</button>
+						</ng-container>
+					</bg-popup-menu>
+
+
+					<bg-popup-menu #tableMoreMenu>
+						<button type="button" class="menuitem"
+										(click)="shareInstance(popInstance)"
+						><svg icon="icon_share"></svg>Share</button>
+						<button type="button" class="menuitem"
+										(click)="revokeInstance(popInstance)"
+						><svg icon="icon_remove"></svg>Revoke</button>
+						<ng-container *ngIf="launchpoints">
+							<button class="menuitem" type="button"
+									*ngFor="let lp of launchpoints"
+									(click)="clickLaunchpoint(lp, popInstance.slug)">
+							<svg icon="icon_external_link"></svg>
+							{{ lp.label }}
+						</button>
+						</ng-container>
+					</bg-popup-menu>
+
+					<div class="u-margin-yaxis4x"
+						*ngIf="hasNextPage() || hasPrevPage()">
+						<nav class="pagination">
+							<h2 class="visuallyhidden">Pagination</h2>
+							<button class="page"
+								[class.is-disabled]="!hasPrevPage()"
+								[attr.disabled]="hasPrevPage() ? null : 'disabled'"
+								(click)="clickPrevPage()"
+							>Previous</button>
+							<button class="page"
+								[class.is-disabled]="!hasNextPage()"
+								[attr.disabled]="hasNextPage() ? null : 'disabled'"
+								(click)="clickNextPage()"
+							>Next</button>
+						</nav>
+					</div>
+					<p	class="u-text-body"
+						*ngIf="! allBadgeInstances?.length"
+					>No recipients.</p>
+					<p	class="u-text-body"
+						*ngIf="allBadgeInstances?.length && ! instanceResults?.length"
+					>No recipients matching filter.</p>
+				</ng-template>
+			</div>
+		</div>
+	</ng-template>
+</main>

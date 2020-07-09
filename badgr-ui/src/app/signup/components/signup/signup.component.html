@@ -1,0 +1,195 @@
+<div
+	class="l-containerxaxis l-containeryaxis l-flex l-flex-justifycenter">
+	<form-message></form-message>
+
+	<div class="shadowcontainer u-animate-dropfade">
+		<!-- OAuth Banner -->
+		<oauth-banner></oauth-banner>
+
+		<!-- Title Message -->
+		<h3
+			class="u-text-h3-bold"
+			id="heading-form"
+		>
+			Create a {{ theme.serviceName || "Badgr" }} Account
+		</h3>
+		<p
+			class="u-text u-text-body u-responsivemargin-top1x2x"
+			*ngIf="! oAuthManager.currentAuthorization"
+		>
+			Already have an account?
+			<a [routerLink]="['/auth/login']">Sign in</a>.
+		</p>
+		<p
+			class="u-text u-text-body u-responsivemargin-top1x2x"
+			*ngIf="oAuthManager.currentAuthorization"
+		>
+			The application
+			<strong>
+				{{ oAuthManager.currentAuthorization.application.name }}
+			</strong>
+			would
+			like to sign you in using {{ theme.serviceName || "Badgr"}}.
+			Already have an account?
+			<a [routerLink]="['/login']">Sign in</a>!
+		</p>
+		<h3
+			class="ruleheadline l-ruleheadline"
+			*ngIf="sessionService.enabledExternalAuthProviders.length > 0"
+		>
+			Sign Up With
+		</h3>
+
+		<div
+			class="l-socialbuttons u-margin-top2x"
+			*ngIf="sessionService.enabledExternalAuthProviders.length > 0"
+		>
+			<button
+				*ngFor="let provider of sessionService.enabledExternalAuthProviders"
+				(click)="sessionService.initiateUnauthenticatedExternalAuth(provider)"
+				class="socialbutton"
+				[style.backgroundColor]="provider.color">
+				<div class="visuallyhidden">Access with {{provider.label}}</div>
+				<img [src]="sanitize(provider.imgSrc)" alt="">
+			</button>
+		</div>
+		<h3
+			class="ruleheadline l-ruleheadline"
+			*ngIf="sessionService.enabledExternalAuthProviders.length > 0"
+		>
+			Or
+		</h3>
+
+		<!-- Sign Up Form -->
+		<form
+			class="u-margin-top2x"
+			role="form"
+			aria-labelledby="heading-form"
+			[formGroup]="signupForm.rawControl"
+			(ngSubmit)="onSubmit()"
+			novalidate
+		>
+
+			<!-- Signup Controls -->
+			<fieldset
+				role="group"
+				aria-labelledby="heading-badgrsignup2"
+			>
+				<legend
+					class="visuallyhidden"
+					id="heading-badgrsignup2"
+				>
+					Sign up with {{ theme.serviceName || "Badgr"}} by providing your information
+				</legend>
+
+				<bg-formfield-text
+					class="u-margin-bottom2x"
+					[control]="signupForm.rawControlMap.username"
+					[label]="'Email'"
+					fieldType="email"
+					[errorMessage]="'Please enter a valid email address'"
+					[autofocus]="true"
+				></bg-formfield-text>
+
+				<bg-formfield-text
+					class="u-margin-bottom2x"
+					[control]="signupForm.rawControlMap.firstName"
+					[label]="'First Name'"
+					[errorMessage]="'Please enter a first name'"
+				></bg-formfield-text>
+
+				<bg-formfield-text
+					class="u-margin-bottom2x"
+					[control]="signupForm.rawControlMap.lastName"
+					[label]="'Last Name'"
+					[errorMessage]="'Please enter a last name'"
+				></bg-formfield-text>
+
+				<bg-formfield-text
+					class="u-margin-bottom2x"
+					[control]="signupForm.rawControlMap.password"
+					[label]="'Password (Must be at least 8 characters)'"
+					fieldType="password"
+					[errorMessage]="{
+						required: 'Please enter a password',
+						minlength: 'Password must be at least 8 characters'
+					}"
+				></bg-formfield-text>
+
+				<bg-formfield-text
+					[control]="signupForm.rawControlMap.passwordConfirm"
+					[label]="'Confirm Password'"
+					fieldType="password"
+					[errorMessage]="{
+						required: 'Please confirm your password',
+						passwordsMatch: 'Passwords do not match'
+					}"
+				></bg-formfield-text>
+			</fieldset>
+
+			<div>
+				<label
+					class="checkbox checkbox-small l-flex u-margin-top2p5x"
+					[class.checkbox-is-error]="signupForm.rawControlMap.agreedTermsService.dirty && !signupForm.rawControlMap.agreedTermsService.valid"
+				>
+					<input
+						name="terms"
+						id="terms"
+						type="checkbox"
+						[formControl]="signupForm.rawControlMap.agreedTermsService"
+					>
+					<span class="checkbox-x-text">
+						<strong>
+							I have read and agree to the
+							<a
+								target="_blank"
+								[href]="theme.termsOfServiceLink || 'https://badgr.org/missing-terms'"
+							>Terms of Service</a>.
+							</strong>
+							<div
+								*ngIf="signupForm.rawControlMap.agreedTermsService.dirty && !signupForm.rawControlMap.agreedTermsService.valid"
+								class="checkbox-x-errortext"
+							>
+								Please read and agree to the Terms of Service if you want to continue.
+							</div>
+						</span>
+				</label>
+				<label
+					class="checkbox checkbox-light l-flex u-margin-top2p5x"
+					for="news"
+					*ngIf="showMarketingOptIn"
+				>
+					<input
+						name="news"
+						id="news"
+						type="checkbox"
+						[formControl]="signupForm.rawControlMap.marketingOptIn"
+					>
+					<span class="checkbox-x-text">
+                        <strong>Yes,</strong>
+                        I would like to receive email updates about products &amp;
+						services, upcoming webinars, news and events from {{configService.theme['serviceName'] || "Badgr"}}.
+                    </span>
+				</label>
+				<div class="l-stack l-stack-2x l-stack-buttons u-margin-top3x">
+					<button class="button button-secondary"
+					        type="button"
+					        *ngIf="oAuthManager.currentAuthorization"
+					        (click)="oAuthManager.cancelCurrentAuthorization()"
+					>Cancel
+					</button>
+					<button class="button"
+					        type="submit"
+					        [disabled]="!! signupFinished"
+					        [loading-promises]="[ signupFinished ]"
+					        loading-message="Signing Up..."
+					>Create Account
+					</button>
+					<!-- TO DO: Add a destination -->
+					<!--<a class="u-text-link-small" href="#"
+					>Change my Badgr location</a>-->
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

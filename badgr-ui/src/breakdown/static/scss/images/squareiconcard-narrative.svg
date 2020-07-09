@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="56px" viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="160" height="160" rx="3"></rect>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Cards-/-Square-/-Narrative_Default" transform="translate(-52.000000, -36.000000)">
+            <g>
+                <g id="Input">
+                    <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    <rect stroke="#E1E0E5" stroke-width="3" x="1.5" y="1.5" width="157" height="157" rx="3"></rect>
+                </g>
+                <g id="Group" transform="translate(32.000000, 16.000000)" fill="#A09EAF">
+                    <g id="Icon">
+                        <path d="M70.4,20 L25.6,20 C22.52,20 20.028,22.52 20.028,25.6 L20,76 L31.2,64.8 L70.4,64.8 C73.48,64.8 76,62.28 76,59.2 L76,25.6 C76,22.52 73.48,20 70.4,20 L70.4,20 Z M30.9803922,39.7647059 L65.0196078,39.7647059 L65.0196078,45.254902 L30.9803922,45.254902 L30.9803922,39.7647059 L30.9803922,39.7647059 Z M52.9411765,54.0392157 L30.9803922,54.0392157 L30.9803922,48.5490196 L52.9411765,48.5490196 L52.9411765,54.0392157 L52.9411765,54.0392157 Z M65.0196078,36.4705882 L30.9803922,36.4705882 L30.9803922,30.9803922 L65.0196078,30.9803922 L65.0196078,36.4705882 L65.0196078,36.4705882 Z" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

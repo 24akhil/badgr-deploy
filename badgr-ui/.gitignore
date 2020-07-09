@@ -1,0 +1,15 @@
+.*.sw*
+.DS_Store
+node_modules/
+typings/
+test-report/
+dist/
+npm-debug.log
+.sass-cache/
+.idea/
+.chrome_karma
+compiled-src
+code/
+temp/
+
+!src/breakdown/static/js/*.js

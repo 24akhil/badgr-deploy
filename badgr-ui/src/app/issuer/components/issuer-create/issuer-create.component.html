@@ -1,0 +1,96 @@
+<form-message></form-message>
+<div class="topbar">
+	<div class="l-containerxaxis">
+		<div class="topbar-x-heading">
+			Create Issuer
+		</div>
+		<div class="topbar-x-subheading">
+			Creating an issuer allows you to award badges to recipients.
+		</div>
+	</div>
+</div>
+
+
+<div class="l-containerxaxis">
+
+	<form (ngSubmit)="onSubmit()"
+	      class="u-width-formsmall u-margin-top3x"
+	      novalidate
+	>
+		<bg-formfield-image #imageField
+		                    label="Image (Optional)"
+		                    imageLoaderName="issuer"
+		                    [placeholderImage]="issuerImagePlacholderUrl"
+		                    [control]="issuerForm.rawControlMap.issuer_image"
+		></bg-formfield-image>
+
+		<bg-formfield-text class="u-margin-yaxis2x"
+		                   [control]="issuerForm.rawControlMap.issuer_name"
+		                   [label]="'Name'"
+		                   [errorMessage]="{required:'Please enter an issuer name'}"
+		                   [autofocus]="true"
+		></bg-formfield-text>
+
+		<bg-formfield-text class="u-margin-bottom2x"
+		                   [control]="issuerForm.rawControlMap.issuer_url"
+		                   [label]="'Website URL'"
+		                   [errorMessage]="'Please enter a valid URL'"
+		                   [urlField]="true"
+		                   [fieldType]="'url'"
+		                   type="url"
+		></bg-formfield-text>
+
+		<bg-formfield-select class="u-margin-bottom2x"
+		                     [control]="issuerForm.rawControlMap.issuer_email"
+		                     [label]="'Contact Email'"
+		                     [placeholder]="'Please select a verified email'"
+		                     [options]="emailsOptions"
+		                     [errorMessage]="{required:'Please select a verified email'}"
+		></bg-formfield-select>
+
+		<bg-formfield-text class="u-margin-bottom2x"
+		                   [control]="issuerForm.rawControlMap.issuer_description"
+		                   [label]="'Description'"
+		                   [errorMessage]="{ required: 'Please enter a description'}"
+		                   [multiline]="true"
+		></bg-formfield-text>
+
+		<label [class.checkbox-is-error]="issuerForm.rawControlMap.agreedTerms.dirty && !issuerForm.rawControlMap.agreedTerms.valid"
+					 *ngIf="dataProcessorUrl"
+		       class="checkbox  l-marginBottom-2x"
+		       for="terms"
+		>
+			<input name="terms"
+			       id="terms"
+			       type="checkbox"
+			       [formControl]="issuerForm.rawControlMap.agreedTerms"
+			>
+			<span class="checkbox-x-text">I have read and agree to the <a target="_blank"
+			                                                              [href]="dataProcessorUrl"
+			>Data
+						Processor Addendum</a>.
+				<div *ngIf="issuerForm.rawControlMap.agreedTerms.dirty && !issuerForm.rawControlMap.agreedTerms.valid"
+				     class="checkbox-x-errortext"
+				>Please
+						read and agree to the Data Processor Addendum if you want to continue.</div>
+				</span>
+
+		</label>
+
+		<div class="l-flex l-flex-1x u-margin-bottom3x u-margin-top4x">
+			<a [routerLink]="['/issuer']"
+			   class="button button-secondary"
+			   [disabled-when-requesting]="true"
+			>Cancel</a>
+			<button type="submit"
+			        class="button"
+			        [disabled]="!! addIssuerFinished"
+			        [loading-promises]="[ addIssuerFinished ]"
+			        loading-message="Adding"
+			>Add Issuer
+			</button>
+		</div>
+
+
+	</form>
+</div>

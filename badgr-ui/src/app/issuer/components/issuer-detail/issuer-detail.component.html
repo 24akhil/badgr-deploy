@@ -1,0 +1,135 @@
+<form-message></form-message>
+
+<ng-template [bgAwaitPromises]="[issuerLoaded]">
+
+	<header class="topbar topbar-withimage">
+		<div class="l-containerxaxis">
+			<div class="topbar-x-breadcrumbs">
+				<bg-breadcrumbs [linkentries]="crumbs">
+				</bg-breadcrumbs>
+			</div>
+		</div>
+		<div class="l-containerxaxis">
+			<div class="topbar-x-wrap">
+				<img class="topbar-x-image" *ngIf="issuer.image" [src]="issuer.image" alt="{{issuer.name}} logo " />
+				<img class="topbar-x-image" *ngIf="!issuer.image" [src]="issuerImagePlaceHolderUrl" alt="Default issuer image">
+				<div class="topbar-x-heading">{{ issuer.name }}
+
+				</div>
+				<div class="topbar-x-subheading">
+					<p class="u-text u-text-small">
+						<strong [truncatedText]="issuer.email" [maxLength]="64"></strong>
+						<br class="u-hidden-minmobilelarge"><span class="u-hidden-maxmobilelarge">
+							— </span>Your Role: {{ issuer?.currentUserStaffMember?.roleInfo?.label }}
+					</p>
+					<p class="u-margin-top1x u-width-paragraph">
+						{{ issuer.description }}
+					</p>
+					<div class="u-margin-top1x">
+						<a href="{{issuer.websiteUrl}}" class="u-text-outlink">Visit Website<svg icon="icon_external_link"></svg></a>
+					</div>
+					<p></p>
+				</div>
+				<div class="topbar-x-buttons">
+					<div class="l-primarymore">
+						<button class="button" [routerLink]="['./badges/create']">Create Badge</button>
+						<button class="buttonicon buttonicon-secondary" [bgPopupMenuTrigger]="issuerActionsMenu">
+							<svg icon="icon_more"></svg>
+							<span class="visuallyhidden">More</span>
+						</button>
+					</div>
+					<bg-popup-menu #issuerActionsMenu>
+						<a class="menuitem" [routerLink]="['./edit']">
+							<svg icon="icon_edit"></svg>
+							Edit
+						</a>
+						<a class="menuitem" (click)="delete($event)" href="#">
+							<svg icon="icon_remove"></svg>
+							Delete
+						</a>
+						<a class="menuitem" [routerLink]="['./staff']">
+							<svg icon="icon_group"></svg>
+							{{ issuer?.currentUserStaffMember?.isOwner ? "Manage": "View" }} Staff
+						</a>
+						<a class="menuitem" *ngFor="let lp of launchpoints" href="{{lp.launch_url}}" target="_blank">
+							<svg icon="icon_external_link"></svg>
+							{{lp.label}}
+						</a>
+					</bg-popup-menu>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<div *bgAwaitPromises="[issuerLoaded, badgesLoaded]">
+
+		<!-- EMPTY STATE: No badge classes -->
+		<section class="emptysection l-emptysection"
+			 *ngIf="! badges?.length">
+			<h2 class="emptysection-x-headline">
+				This Issuer has no badges
+			</h2>
+			<p class="emptysection-x-copy">
+				No badges associated with this issuer, yet.</p>
+			<div class="emptysection-x-buttons">
+			    <button class="button button-secondary"
+			    		[routerLink]="['badges/create']"
+			    		[disabled-when-requesting]="true"
+	    		>Create a badge</button>
+		  	</div>
+			<div class="emptysection-x-imagecontainer">
+				<img alt="Illustration" class="emptysection-x-image"
+					 [src]="noIssuersPlaceholderSrc">
+			</div>
+		</section>
+
+		<!-- Has Badge Classes -->
+		<section class="l-containerxaxis l-containeryaxis"
+				 *ngIf="badges?.length">
+			<h4 class="u-text-h3-bold u-text-dark2 u-margin-top1x">
+					{{ badges.length }} Badge{{ badges.length==1? '':'s' }}
+			</h4>
+			<table class="datatable datatable-roundheaders datatable-onlyfirstcolumn datatable-verticalalignmiddle u-margin-top2x" *ngIf="badges?.length">
+				<thead class="datatable-x-head">
+					<tr class="datatable-x-header">
+						<th class="datatable-x-cell">Badge</th>
+						<th class="datatable-x-cell">Created</th>
+						<th class="datatable-x-cell">Recipients</th>
+						<th class="datatable-x-cell">
+							<span class="visuallyhidden">Actions</span></th>
+					</tr>
+				</thead>
+				<tbody class="datatable-x-body">
+					<tr class="datatable-x-row" *ngFor="let badge of badges; let i=index">
+						<td class="datatable-x-cell">
+							<div class="l-flex l-flex-aligncenter l-flex-1x">
+								<img class="l-flex-x-shrink0 badgeimage badgeimage-small" src="{{badge.image}}" alt="{{badge.description}}" width="40">
+								<a class="u-text u-text-breakword" [routerLink]="['/issuer/issuers', issuer.slug, 'badges', badge.slug]">{{badge.name}}</a>
+								<div class="u-hidden-minmobilelarge l-flex-x-selfcenter u-margin-leftauto">
+									<a class="u-text-link-small" [routerLink]="['/issuer/issuers/', issuer.slug, 'badges', badge.slug, 'issue']">Award</a>
+								</div>
+							</div>
+						</td>
+						<td class="datatable-x-cell">
+							<div class="l-flex l-flex-aligncenter">
+								<p class="u-text"><time [date]="badge.createdAt" format="mediumDate"></time></p>
+							</div>
+						</td>
+						<td class="datatable-x-cell">
+							<div class="l-flex l-flex-aligncenter">
+								<p class="u-text">{{ badge.recipientCount }}</p>
+							</div>
+						</td>
+						<td class="datatable-x-cell">
+							<div class="l-flex l-flex-aligncenter l-flex-justifyend">
+								<a class="u-text-link-small" [routerLink]="['/issuer/issuers/', issuer.slug, 'badges', badge.slug, 'issue']">Award</a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+	</div>
+
+</ng-template>

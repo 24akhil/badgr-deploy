@@ -1,0 +1,54 @@
+<form-message></form-message>
+<div class="topbar">
+	<div class="l-containerxaxis">
+		<div class="topbar-x-heading">
+			App Integrations
+		</div>
+		<div class="topbar-x-subheading">
+			You've authorized access to your {{configService.theme['serviceName'] || "Badgr"}} account for the apps and sites
+			listed below.
+		</div>
+	</div>
+</div>
+<div class="l-containerxaxis l-containeryaxis" *bgAwaitPromises="[ appIntegrationsSet.loadedPromise ]">
+	<!-- EMPTY STATE: Integration List -->
+	<p class="u-text" *ngIf="0 == oAuthApps.length && 0 == appIntegrationsSet.length">
+		No App Integrations found.
+	</p>
+	<div class="l-grid l-grid-cards " *ngIf="oAuthApps.length > 0 || appIntegrationsSet.length > 0">
+		<!-- Integration List -->
+		<div class="integrationcard" *ngFor="let integration of appIntegrationsSet">
+			<div class="integrationcard-x-body">
+				<div class="integrationcard-x-image">
+					<img class="badgeimage" [src]="integration.image" width="80">
+				</div>
+				<a class="integrationcard-x-title" [routerLink]="integration.integrationUid
+						? ['/profile/app-integrations/app/', integration.integrationType, integration.integrationUid]
+						: ['/profile/app-integrations/app/', integration.integrationType]">{{
+					integration.name }}</a>
+				<div class="integrationcard-x-desc">{{ integration.description }}</div>
+			</div>
+			<div class="integrationcard-x-footer">
+				<div class="integrationcard-x-status">{{ integration.active ? 'Active' : 'Inactive' }}</div>
+			</div>
+		</div>
+		<!-- oAuth App Integration List -->
+		<div class="integrationcard" *ngFor="let app of oAuthApps">
+			<div class="integrationcard-x-body">
+				<div class="integrationcard-x-image">
+					<img class="badgeimage" [src]="app.imageUrl" width="80">
+				</div>
+				<a class="integrationcard-x-title" [routerLink]="['/profile/app-integrations/oauth-app/', app.entityId]"
+					id="appCardTitle-{{ app.entityId }}">
+					{{app.name }}
+				</a>
+				<div class="integrationcard-x-desc">This application has been granted permission to sign you in using your {{configService.theme['serviceName'] || "Badgr"}} account.</div>
+			</div>
+			<div class="integrationcard-x-footer">
+				<div class="integrationcard-x-status">Authorized: <strong><time [date]="app.createdDate" format="mediumDate"></time></strong></div>
+				<button class="integrationcard-x-link" type="button" [attr.aria-labelledby]="'appCardTitle-' + app.entityId"
+					(click)="revokeApp(app)">Revoke</button>
+			</div>
+		</div>
+	</div>
+</div>

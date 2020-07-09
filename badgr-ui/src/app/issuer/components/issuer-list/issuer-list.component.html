@@ -1,0 +1,96 @@
+<form-message></form-message>
+
+<header class="topbar">
+	<div class="l-containerxaxis topbar-x-wrap">
+		<h2 class="topbar-x-heading">
+			Issuers
+			<ng-template [bgAwaitPromises]="[issuersLoaded]" [showLoader]="false">
+			<span class="topbar-x-internalheading">
+				{{ issuers.length | i18nPlural: plural['issuer']}}
+			</span>
+			</ng-template>
+		</h2>
+		<button class="button topbar-x-button"
+				*ngIf="!features.disableIssuers"
+				[routerLink]="['/issuer/create']"
+				[disabled-when-requesting]="true"
+		>Create Issuer</button>
+	</div>
+</header>
+
+<div>
+	<ng-template [bgAwaitPromises]="[issuersLoaded]" [showLoader]="true">
+
+		<!-- Empty state: no issuers -->
+		<section
+			class="emptysection l-emptysection"
+			*ngIf="Array.isArray(issuers) && issuers?.length === 0">
+			<h2 class="emptysection-x-headline">
+				You have no issuers</h2>
+			<p class="emptysection-x-copy">
+				Issuers allow you to create badges and award them to people.</p>
+				<div class="emptysection-x-buttons">
+					<button class="button button-secondary"
+							*ngIf="!features.disableIssuers"
+							[routerLink]="['/issuer/create']"
+							[disabled-when-requesting]="true"
+					>Create an Issuer</button>
+			</div>
+			<div class="emptysection-x-imagecontainer">
+				<img alt="Illustration" class="emptysection-x-image"
+					 [src]="noIssuersPlaceholderSrc">
+			</div>
+		</section>
+
+		<!-- List of Issuers -->
+		<section
+			class="l-containerxaxis l-containeryaxis l-responsivelist">
+			<div class="issuercard" *ngFor="let issuer of issuers">
+
+				<div class="issuercard-x-image">
+					<img [loaded-src]="issuer?.image" [loading-src]="issuerPlaceholderSrc" [error-src]="issuerPlaceholderSrc" alt="{{ issuer.name }} avatar">
+				</div>
+				<div class="issuercard-x-title">
+					<a [routerLink]="['/issuer/issuers/', issuer.slug]">{{issuer.name}}</a>
+					<p><strong>Your Role: </strong>{{ issuer.currentUserStaffMember?.roleInfo.label }}</p>
+				</div>
+				<div class="issuercard-x-desc" [truncatedText]="issuer.description" [maxLength]="250"></div>
+
+				<div class="issuercard-x-topbadges" *ngFor="let issuerBadges of [issuerToBadgeInfo[issuer.issuerUrl]]">
+					<h3 class="u-text-body-bold u-text-dark1 u-margin-bottom2x" *ngIf="issuerBadges">
+						Top Badges:
+					</h3>
+					<div class="l-flex l-flex-2x l-flex-column">
+
+						<ng-template [bgAwaitPromises]="[badgesLoaded]">
+							<ng-container *ngIf="issuerBadges">
+								<div class="l-flex l-flex-2x" *ngFor="let badge of issuerBadges.badges.slice(0,3)">
+									<badge-image class="stack-x-image" [badge]="badge" [size]="40"></badge-image>
+									<div class="l-flex l-flex-column">
+										<a
+											[routerLink]="['/issuer/issuers/', badge?.issuerSlug || '', 'badges', badge?.slug || '']"
+											class="u-text-link u-break-word">
+											{{ badge.name }}
+										</a>
+										<p class="u-text-small u-text-dark4">{{ badge.recipientCount | i18nPlural: plural['recipient'] }}</p>
+									</div>
+								</div>
+							</ng-container>
+						</ng-template>
+
+					</div>
+				</div>
+
+				<div class="issuercard-x-footer">
+					<div class="l-flex l-flex-aligncenter l-flex-1x">
+						<svg class="icon icon-light4 u-hidden-maxmobilelarge" width="24px" icon="icon_badge"></svg>
+						<p class="u-text-small u-text-nowrap"
+						[innerHTML]="issuer.badgeClassCount | i18nPlural: plural['badges']"></p>
+					</div>
+					<a class="u-text u-text-small" [routerLink]="['/issuer/issuers/', issuer.slug]">View</a>
+				</div>
+			</div>
+		</section>
+
+	</ng-template>
+</div>

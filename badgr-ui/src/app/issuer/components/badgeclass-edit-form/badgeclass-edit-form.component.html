@@ -1,0 +1,455 @@
+<form-message></form-message>
+<form
+	[formGroup]="badgeClassForm.rawControl"
+	#formElem
+	(ngSubmit)="onSubmit()"
+	novalidate
+	class="l-responsivelist"
+>
+	<!-- General Details Panel -->
+	<div class="formsection">
+		<!-- <div class="formsection-x-title">
+			<h2 class="u-text-dark2">
+				Badge Basics
+			</h2>
+		</div> -->
+
+		<div class="formsection-x-help">
+			<h3 class="u-text-body-bold">Badge Basics</h3>
+			<p class="u-text u-margin-top1x u-margin-bottom2x">
+				Badge images can be either PNGs or SVGs. All fields are required.
+			</p>
+			<a href="https://openbadges.org/"
+			   class="u-text-outlink"
+			>Learn About Open Badges
+				<svg icon="icon_external_link"></svg>
+			</a>
+		</div>
+		<div class="formsection-x-body">
+
+			<div class="forminput u-margin-bottom2x">
+				<bg-formfield-image
+					#imageField
+					label="Image"
+					imageLoaderName="badge"
+					[newDropZone]="true"
+					[generateRandom]="true"
+					(generateRandomImage)="generateRandomImage()"
+					class="l-formimageupload-x-upload"
+					[placeholderImage]="badgeClassPlaceholderImageUrl"
+					[control]="badgeClassForm.rawControlMap.badge_image"
+				>
+				</bg-formfield-image>
+				<badge-studio #badgeStudio
+				              [hidden]="true"
+				></badge-studio>
+			</div>
+
+			<div class="forminput u-margin-bottom2x">
+				<bg-formfield-text
+					[control]="badgeClassForm.rawControlMap.badge_name"
+					label="Name"
+					[errorMessage]="{ required: 'Please enter a badge name' }"
+					[autofocus]="true"
+				></bg-formfield-text>
+			</div>
+
+			<div class="forminput">
+				<bg-formfield-text
+					[control]="badgeClassForm.rawControlMap.badge_description"
+					label="Short Description"
+					id="badgeclass_description_input"
+					placeholder="A short summary of this achievement."
+					[errorMessage]="{ required: 'Please enter a description' }"
+					[multiline]="true"
+				></bg-formfield-text>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Criteria Panel -->
+	<div class="formsection">
+		<div class="formsection-x-title">
+			<h2 class="u-text-dark2">
+				Criteria
+				<span>(At least one field is required.)</span>
+			</h2>
+		</div>
+
+		<div class="formsection-x-help">
+			<h3 class="u-text-body-bold">What are Criteria?</h3>
+			<p class="u-text u-margin-top1x u-margin-bottom2x">
+				The criteria field describes exactly what must be done to earn this badge. Some issuers choose a URL on their
+				website as a promotional page that explains this badge opportunity and how to earn it.
+			</p>
+		</div>
+		<div class="formsection-x-body">
+
+			<div class="u-margin-bottom2x">
+				<div class="mdeditor">
+					<div class="mdeditor-x-editor">
+						<p
+							[hidden]="!alignmentFieldDirty || !badgeClassForm.hasError('criteriaRequired')"
+							class="u-text u-margin-bottom2x u-text-error"
+						>Either text or URL is required.</p>
+
+						<bg-formfield-markdown
+							[control]="badgeClassForm.rawControlMap.badge_criteria_text"
+							label=" How does the recipient earn this badge?"
+							class="l-formsection-x-inputoffset"
+							[errorMessage]="''"
+						></bg-formfield-markdown>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="forminput u-margin-bottom2x">
+				<bg-formfield-text
+					[control]="badgeClassForm.rawControlMap.badge_criteria_url"
+					label="URL"
+					[urlField]="true"
+					fieldType="url"
+					errorMessage="URL to the Badge Criteria Page"
+				></bg-formfield-text>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- alignments -->
+	<div *ngIf="alignmentsEnabled"
+	     class="formsection"
+	>
+		<div class="formsection-x-title">
+			<h2 class="u-text-dark2">
+				Alignment
+				<span>(Optional)</span>
+			</h2>
+			<button
+				type="button"
+				(click)="disableAlignments()"
+				class="buttonicon buttonicon-link"
+			>
+				<svg icon="icon_close"></svg>
+				<span class="visuallyhidden">Close</span>
+			</button>
+		</div>
+
+		<div class="formsection-x-help">
+			<h3 class="u-text-body-bold">What is Alignment?</h3>
+			<p class="u-text u-margin-top1x u-margin-bottom2x">
+				An Open Badge can optionally align to an educational standard. Alignment information may be relevant to people
+				viewing an earner's awarded badges, or to a potential earner deciding whether to apply for the badge.
+			</p>
+		</div>
+		<div class="formsection-x-body">
+
+			<ng-container *ngFor="let alignment of badgeClassForm.controls.alignments.controls; let i=index">
+				<div class="l-flex l-flex-1x l-flex-justifybetween u-margin-bottom2x">
+					<h3 class="u-text-body-bold u-text-dark1">{{ alignment.controls.target_name.value }}</h3>
+					<button
+						*ngIf="badgeClassForm.controls.alignments.controls.length > 1"
+						type="button"
+						(click)="removeAlignment(alignment)"
+						class="u-text-link"
+					>Remove
+					</button>
+				</div>
+				<div class="forminput u-margin-bottom6x">
+					<div class="forminput-x-inputs">
+
+						<bg-formfield-text
+							[control]="alignment.rawControlMap.target_name"
+							label="Name"
+							[errorMessage]="{required:'Please enter an alignment name'}"
+							id="alignment_name_{{ i }}"
+						></bg-formfield-text>
+
+						<bg-formfield-text
+							[control]="alignment.rawControlMap.target_url"
+							label="URL"
+							[errorMessage]="{required:'Please enter an alignment URL'}"
+							[urlField]="true"
+							id="alignment_url_{{ i }}"
+						></bg-formfield-text>
+
+						<bg-formfield-text
+							[control]="alignment.rawControlMap.target_description"
+							label="Short Description"
+							[multiline]="true"
+							id="alignment_description_{{ i }}"
+						></bg-formfield-text>
+
+						<button
+							*ngIf="!showAdvanced[i]"
+							(click)="showAdvanced[i] = true"
+							type="button"
+							class="u-text-link-small u-margin-yaxis2x"
+						>Show Advanced Options
+						</button>
+
+						<ng-template [ngIf]="showAdvanced[i]">
+							<button
+								(click)="showAdvanced[i] = false"
+								type="button"
+								class="u-text-link-small u-margin-yaxis2x"
+							>Hide Advanced Options
+							</button>
+
+							<label class="forminput-x-label u-margin-top2x"
+							       for="forminput2"
+							>Framework</label>
+							<input type="text"
+							       id="forminput2"
+							       name="forminput2"
+							>
+
+							<label class="forminput-x-label u-margin-top2x"
+							       for="url"
+							>Code</label>
+							<input type="text"
+							       id="url"
+							       name="url"
+							>
+						</ng-template>
+
+					</div>
+
+				</div>
+			</ng-container>
+
+			<div class="l-stack">
+				<button
+					(click)="addAlignment()"
+					type="button"
+					class="button button-secondary"
+				>
+					Add Alignment
+				</button>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- tags -->
+	<div *ngIf="tagsEnabled"
+	     class="formsection"
+	>
+		<div class="formsection-x-title">
+			<h2 class="u-text-dark2">
+				Tags
+				<span>(Optional)</span>
+			</h2>
+			<button
+				type="button"
+				(click)="disableTags()"
+				class="buttonicon buttonicon-link"
+			>
+				<svg icon="icon_close"></svg>
+				<span class="visuallyhidden">Close</span>
+			</button>
+		</div>
+
+		<div class="formsection-x-help">
+			<h3 class="u-text-body-bold">What are Tags?</h3>
+			<p class="u-text u-margin-top1x u-margin-bottom2x">
+				Tags are optional ways to describe a type of achievement. When you use tags, you help people who are interested
+				in your topic find your Badge.
+			</p>
+		</div>
+		<div class="formsection-x-body">
+
+			<div class="l-tags">
+				<div
+					*ngFor="let tag of tags"
+					class="tag tag-withclose"
+				>
+					{{ tag }}
+					<button class="buttonicon buttonicon-link">
+						<svg
+							icon="icon_close"
+							(click)="removeTag(tag)"
+						></svg>
+						<span class="visuallyhidden">Remove</span>
+					</button>
+				</div>
+			</div>
+
+			<div class="forminput forminput-withbutton forminput-light1 u-width-formsmall u-margin-top3x">
+				<label class="forminput-x-label visuallyhidden"
+				       for="addtag"
+				>Add Tag</label>
+				<div class="forminput-x-inputs">
+					<input
+						name="addtag"
+						id="addtag"
+						(keypress)="handleTagInputKeyPress($event)"
+						#newTagInput
+						type="text"
+						maxlength="50"
+						placeholder="New Tag..."
+					>
+					<div class="forminput-x-button">
+						<button
+							type="button"
+							(click)="addTag()"
+							class="button button-secondary button-informinput"
+						>
+							Add
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- expiration -->
+	<div *ngIf="expirationEnabled"
+	     class="formsection"
+	>
+		<div class="formsection-x-title">
+			<h2 class="u-text-dark2">
+				Expiration
+				<span>(Optional)</span>
+			</h2>
+			<button
+				type="button"
+				(click)="disableExpiration()"
+				class="buttonicon buttonicon-link"
+			>
+				<svg icon="icon_close"></svg>
+				<span class="visuallyhidden">Close</span>
+			</button>
+		</div>
+
+		<div class="formsection-x-help">
+			<h3 class="u-text-body-bold">What is Expiration?</h3>
+			<p class="u-text u-margin-top1x u-margin-bottom2x">
+				Add the duration this badge is generally valid for. This can also be changed at the time of award. Badges will
+				be marked as expired after expiration.
+			</p>
+		</div>
+		<div class="formsection-x-body">
+			<div class="l-spacestack">
+				<bg-formfield-text
+					[control]="expirationForm.rawControlMap.expires_amount"
+					label="Number"
+					[fieldType]="'number'"
+					[max]="1000"
+					[maxchar]="4"
+				></bg-formfield-text>
+				<bg-formfield-select
+					ariaLabel="Select Duration"
+					[control]="expirationForm.rawControlMap.expires_duration"
+					label="Duration"
+					[placeholder]="'Select a duration'"
+					[optionMap]="durationOptions"
+				></bg-formfield-select>
+			</div>
+		</div>
+	</div>
+
+	<!-- add options -->
+	<div class="formsection formsection-nohelp">
+		<h2 class="formsection-x-title">
+			Optional Details
+		</h2>
+		<div class="formsection-x-body">
+			<ul>
+				<li class="l-flex l-flex-justifybetween l-flex-aligncenter u-padding-bottom2x">
+					<div class="l-flex l-flex-2x">
+						<svg class="icon icon-dark4"
+						     width="24px"
+						     viewBox="0 0 24 24"
+						     icon="icon_link"
+						></svg>
+						<p class="u-text-body-semibold u-text-dark2">Alignment</p>
+					</div>
+					<button
+						type="button"
+						(click)="enableAlignments()"
+						*ngIf="!alignmentsEnabled"
+						class="u-text-link-small"
+					>Add
+					</button>
+					<button
+						type="button"
+						disabled
+						*ngIf="alignmentsEnabled"
+						class="u-text-link-small u-text-light4"
+					>Added
+					</button>
+				</li>
+				<li class="l-flex l-flex-justifybetween l-flex-aligncenter border border-top border-light3 u-padding-yaxis2x">
+					<div class="l-flex l-flex-2x">
+						<svg class="icon icon-dark4"
+						     width="24px"
+						     viewBox="0 0 24 24"
+						     icon="icon_tags"
+						></svg>
+						<p class="u-text-body-semibold u-text-dark2">Tags</p>
+					</div>
+					<button
+						type="button"
+						(click)="enableTags()"
+						*ngIf="!tagsEnabled"
+						class="u-text-link-small"
+					>Add
+					</button>
+					<button
+						type="button"
+						*ngIf="tagsEnabled"
+						disabled
+						class="u-text-link-small u-text-light4"
+					>Added
+					</button>
+				</li>
+				<li class="l-flex l-flex-justifybetween l-flex-aligncenter border border-top border-light3 u-padding-yaxis2x">
+					<div class="l-flex l-flex-2x">
+						<svg class="icon icon-dark4"
+						     width="24px"
+						     viewBox="0 0 24 24"
+						     icon="icon_pending"
+						></svg>
+						<p class="u-text-body-semibold u-text-dark2">Expiration</p>
+					</div>
+					<button
+						type="button"
+						(click)="enableExpiration()"
+						*ngIf="!expirationEnabled"
+						class="u-text-link-small"
+					>Add
+					</button>
+					<button
+						type="button"
+						disabled
+						*ngIf="expirationEnabled"
+						class="u-text-link-small u-text-light4"
+					>Added
+					</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="l-stack l-stack-right u-margin-top3x">
+		<button
+			type="button"
+			[disabled-when-requesting]="true"
+			(click)="cancelClicked()"
+			class="button button-secondary"
+		>Cancel
+		</button>
+		<button
+			type="submit"
+			class="button"
+			[disabled]="!! savePromise"
+			[loading-promises]="[ savePromise ]"
+			loading-message="{{ submittingText }}"
+		>{{ submitText }}</button>
+	</div>
+
+</form>
