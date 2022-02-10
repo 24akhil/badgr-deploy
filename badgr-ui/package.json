@@ -90,7 +90,7 @@
 		"karma-jasmine": "~1.1.1",
 		"karma-jasmine-html-reporter": "^0.2.2",
 		"live-server": "1.2.1",
-		"node-sass": "^4.11.0",
+		"node-sass": "^7.0.0",
 		"onchange": "5.2.0",
 		"parse5": "5.1.0",
 		"postcss": "7.0.8",
